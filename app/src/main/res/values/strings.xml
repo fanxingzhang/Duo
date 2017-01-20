@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Duo</string>
+    <string name="action_settings">Settings</string>
+    <string name="search">Search</string>
+    <string name="wins">Wins</string>
+    <string name="losses">Losses</string>
+    <string name="win_rate">Win Rate</string>
+    <string name="champion_kills">Total\nKills</string>
+    <string name="minion_kills">Minion\nKills</string>
+    <string name="neutral_monster_kills">Neutral\nMonsters</string>
+    <string name="assists">Total\nAssists</string>
+    <string name="turret_kills">Turret\nKills</string>
+    <string name="summoner_info_summary">Ranked Summary</string>
+</resources>
