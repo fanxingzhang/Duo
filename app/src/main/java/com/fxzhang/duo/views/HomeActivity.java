@@ -6,6 +6,8 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.fxzhang.duo.MainActivity;
@@ -26,9 +28,10 @@ import retrofit2.Response;
  * Created by fanny on 20/12/16.
  */
 
-public class HomeActivity extends MainActivity implements SearchView.OnQueryTextListener {
+public class HomeActivity extends MainActivity implements SearchView.OnQueryTextListener, ListView.OnItemClickListener{
 
     ListView mSummonerListView;
+    List<SharedPref.SummonerLite> summonerList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,9 +92,15 @@ public class HomeActivity extends MainActivity implements SearchView.OnQueryText
     }
 
     private void initList() {
-        List<SharedPref.SummonerLite> summonerList = SharedPref.getSavedSummonerList(this);
+        summonerList = SharedPref.getSavedSummonerList(this);
         Log.d("TEST", "" + summonerList.size());
         SummonerListAdapter summonerListAdapter = new SummonerListAdapter(this, summonerList);
         mSummonerListView.setAdapter(summonerListAdapter);
+        mSummonerListView.setOnItemClickListener(this);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        searchSummonerByName(summonerList.get(position).name.toLowerCase().replace(" ", ""));
     }
 }

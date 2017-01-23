@@ -1,18 +1,27 @@
 package com.fxzhang.duo.views;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.fxzhang.duo.R;
 import com.fxzhang.duo.SubActivity;
 import com.fxzhang.duo.service.response.LeagueDto;
+import com.fxzhang.duo.service.response.Summoner;
 import com.fxzhang.duo.utils.SharedPref;
 import com.fxzhang.duo.utils.Tags;
 import com.fxzhang.duo.service.response.PlayerStatsSummaryDto;
 import com.fxzhang.duo.service.response.SummonerStatsSummary;
+import com.fxzhang.duo.views.fragments.SummonerSelectFragment;
 import com.squareup.picasso.Picasso;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -42,12 +51,14 @@ public class SummonersActivity extends SubActivity {
     private TextView mLevelText;
     private TextView mTotalKillsText;
     private TextView mTotalAssistsText;
-    private TextView mTurretKillsText;
+    //private TextView mTurretKillsText;
     private TextView mRankText;
     private TextView mLeagueText;
     private TextView mLPText;
     private ImageView mIconImage;
     private ImageView mLeagueImage;
+
+    private SummonerSelectFragment summonerSelectFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +77,7 @@ public class SummonersActivity extends SubActivity {
         mWinRateText = (TextView) findViewById(R.id.summoner_win_rate);
         mTotalKillsText = (TextView) findViewById(R.id.summoner_champion_kills);
         mTotalAssistsText = (TextView) findViewById(R.id.summoner_assists);
-        mTurretKillsText = (TextView) findViewById(R.id.summoner_turrets);
+        //mTurretKillsText = (TextView) findViewById(R.id.summoner_turrets);
         mLevelText = (TextView) findViewById(R.id.summoner_level);
         mRankText = (TextView) findViewById(R.id.summoner_rank);
         mLeagueText = (TextView) findViewById(R.id.summoner_league_name);
@@ -74,6 +85,58 @@ public class SummonersActivity extends SubActivity {
         mLeagueImage = (ImageView) findViewById(R.id.summoner_league_image);
 
         getSummonerDetails();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_summoners, menu);
+        return true;
+    }
+
+
+    public void startCompare(MenuItem item) {
+        summonerSelectFragment = new SummonerSelectFragment();
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.main_content_view, summonerSelectFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    public void compare(String name) {
+        getSupportFragmentManager().popBackStack();
+        searchSummonerByName(name.toLowerCase().replace(" ", ""));
+    }
+
+    private void searchSummonerByName(final String name) {
+        Call<Map<String, Summoner>> call = riotGamesService.getSummonerByName("na", name);
+        call.enqueue(new Callback<Map<String, Summoner>>() {
+            @Override
+            public void onResponse(Call<Map<String, Summoner>> call, Response<Map<String, Summoner>> response) {
+                Summoner mSummoner = response.body().get(name);
+                searchSummonerById(mSummoner);
+            }
+
+            @Override
+            public void onFailure(Call<Map<String, Summoner>> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void searchSummonerById(Summoner summoner) {
+        Intent intent = new Intent(this, SummonerCompareActivity.class);
+        intent.putExtra(Tags.SUMMONER_ID, summoner.id);
+        intent.putExtra(Tags.SUMMONER_NAME, summoner.name);
+        intent.putExtra(Tags.SUMMONER_PROFILE_ID, summoner.profileIconId);
+        intent.putExtra(Tags.SUMMONER_LEVEL, summoner.summonerLevel);
+        intent.putExtra(Tags.SUMMONER_ID2, mSummonerId);
+        intent.putExtra(Tags.SUMMONER_NAME2, mSummonerName);
+        intent.putExtra(Tags.SUMMONER_PROFILE_ID2, mSummonerIconId);
+        intent.putExtra(Tags.SUMMONER_LEVEL2, mSummonerLevel);
+        intent.putExtra(Tags.PLAYER_STATS_SUMMARY, mPlayerStatsSummary);
+        intent.putExtra(Tags.RANKED_DETAILS, mRankedDetails);
+
+        startActivity(intent);
     }
 
     private void getSummonerDetails() {
@@ -137,7 +200,7 @@ public class SummonersActivity extends SubActivity {
 
         mTotalKillsText.setText("" + mPlayerStatsSummary.aggregatedStats.totalChampionKills);
         mTotalAssistsText.setText("" + mPlayerStatsSummary.aggregatedStats.totalAssists);
-        mTurretKillsText.setText("" + mPlayerStatsSummary.aggregatedStats.totalTurretsKilled);
+        //mTurretKillsText.setText("" + mPlayerStatsSummary.aggregatedStats.totalTurretsKilled);
 
         String mRank = mRankedDetails.tier;
         String mDivision = mRankedDetails.entries.get(0).division;

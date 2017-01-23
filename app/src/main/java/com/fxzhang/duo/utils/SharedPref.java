@@ -22,9 +22,9 @@ public class SharedPref {
     public static class SummonerLite {
         public String name;
         public String rank;
-        public long profileIconId;
+        public int profileIconId;
         public long id;
-        public SummonerLite(long id, String name, long profileId, String rank) {
+        public SummonerLite(long id, String name, int profileId, String rank) {
             this.id = id;
             this.name = name;
             this.profileIconId = profileId;

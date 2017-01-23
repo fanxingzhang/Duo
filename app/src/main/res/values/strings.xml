@@ -11,4 +11,12 @@
     <string name="assists">Total\nAssists</string>
     <string name="turret_kills">Turret\nKills</string>
     <string name="summoner_info_summary">Ranked Summary</string>
+    <string name="compare">Compare</string>
+    <string name="compare_ranked_stats">Compare Ranked Stats</string>
+    <string name="select_summoners_compare">Select summoner to compare</string>
+    <string name="champion_kills2">Total Kills</string>
+    <string name="minion_kills2">Minion Kills</string>
+    <string name="neutral_monster_kills2">Neutral Monsters</string>
+    <string name="assists2">Total Assists</string>
+    <string name="turret_kills2">Turret Kills</string>
 </resources>

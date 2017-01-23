@@ -21,7 +21,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/main_content_view"
         android:orientation="horizontal"
         android:layout_width="match_parent"

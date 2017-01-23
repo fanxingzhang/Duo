@@ -1,10 +1,12 @@
 package com.fxzhang.duo.service.response;
 
+import java.io.Serializable;
+
 /**
  * Created by fanny on 24/12/16.
  */
 
-public class LeagueEntryDto {
+public class LeagueEntryDto implements Serializable{
     public String division;
     public boolean isFreshBlood;
     public boolean isHotStreak;
