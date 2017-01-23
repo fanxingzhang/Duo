@@ -18,6 +18,7 @@ import retrofit2.Retrofit;
 public class MainActivity extends AppCompatActivity {
 
     protected static final String PROFILE_ICON_URL = "http://ddragon.leagueoflegends.com/cdn/6.24.1/img/profileicon/@@@.png";
+    protected static final String CHAMPION_ICON_URL = "http://ddragon.leagueoflegends.com/cdn/7.2.1/img/champion/@@@.png";
 
     protected RiotGamesService riotGamesService;
     protected RiotGamesService riotGamesServiceForMatches;

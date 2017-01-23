@@ -1,5 +1,7 @@
 package com.fxzhang.duo.service;
 
+import com.fxzhang.duo.service.response.ChampionDto;
+import com.fxzhang.duo.service.response.ChampionListDto;
 import com.fxzhang.duo.service.response.LeagueDto;
 import com.fxzhang.duo.service.response.MatchList;
 import com.fxzhang.duo.service.response.Summoner;
@@ -28,4 +30,7 @@ public interface RiotGamesService {
 
     @GET("/api/lol/{region}/v2.2/matchlist/by-summoner/{summonerId}")
     Call<MatchList> getMatchList(@Path("region") String region, @Path("summonerId") long summonderId);
+
+    @GET("/api/lol/static-data/{region}/v1.2/champion")
+    Call<ChampionListDto> getChampionList(@Path("region") String region);
 }

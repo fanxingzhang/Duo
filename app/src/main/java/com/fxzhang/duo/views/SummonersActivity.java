@@ -1,9 +1,11 @@
 package com.fxzhang.duo.views;
 
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,10 +14,13 @@ import android.widget.TextView;
 
 import com.fxzhang.duo.R;
 import com.fxzhang.duo.SubActivity;
+import com.fxzhang.duo.service.response.ChampionDto;
+import com.fxzhang.duo.service.response.ChampionListDto;
 import com.fxzhang.duo.service.response.LeagueDto;
 import com.fxzhang.duo.service.response.MatchList;
 import com.fxzhang.duo.service.response.MatchReference;
 import com.fxzhang.duo.service.response.Summoner;
+import com.fxzhang.duo.utils.RGManager;
 import com.fxzhang.duo.utils.SharedPref;
 import com.fxzhang.duo.utils.Tags;
 import com.fxzhang.duo.service.response.PlayerStatsSummaryDto;
@@ -24,6 +29,7 @@ import com.fxzhang.duo.views.fragments.SummonerSelectFragment;
 import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,6 +67,10 @@ public class SummonersActivity extends SubActivity {
     private ImageView mIconImage;
     private ImageView mLeagueImage;
 
+    private ImageView champion1;
+    private ImageView champion2;
+    private ImageView champion3;
+
     private SummonerSelectFragment summonerSelectFragment;
 
     @Override
@@ -86,6 +96,10 @@ public class SummonersActivity extends SubActivity {
         mLeagueText = (TextView) findViewById(R.id.summoner_league_name);
         mLPText = (TextView) findViewById(R.id.summoner_lp);
         mLeagueImage = (ImageView) findViewById(R.id.summoner_league_image);
+
+        champion1 = (ImageView) findViewById(R.id.champion_icon_1);
+        champion2 = (ImageView) findViewById(R.id.champion_icon_2);
+        champion3 = (ImageView) findViewById(R.id.champion_icon_3);
 
         getSummonerDetails();
     }
@@ -217,15 +231,60 @@ public class SummonersActivity extends SubActivity {
                 championsCount.put(match.champion, 1);
             }
         }
-        int max = 0;
-        long maxChampion;
-        for (Map.Entry<Long, Integer> entry : championsCount.entrySet()) {
-            if (entry.getValue() > max) {
-                maxChampion = entry.getKey();
-                max = entry.getValue();
+        final List<Long> maxChampions = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            int max = 0;
+            long maxChampion = 0;
+            for (Map.Entry<Long, Integer> entry : championsCount.entrySet()) {
+                if (entry.getValue() > max) {
+                    maxChampion = entry.getKey();
+                    max = entry.getValue();
+                }
+            }
+            Log.d("CHAMION", "" + maxChampion);
+            maxChampions.add(maxChampion);
+            championsCount.remove(maxChampion);
+        }
+
+        final RGManager manager = RGManager.newInstance();
+        if (manager.getChampionList() != null) {
+            setChampionsImg(maxChampions, manager.getChampionList());
+        }
+        else {
+            Call<ChampionListDto> call = riotGamesService.getChampionList("na");
+            call.enqueue(new Callback<ChampionListDto>() {
+                @Override
+                public void onResponse(Call<ChampionListDto> call, Response<ChampionListDto> response) {
+                    if (response.body() != null) {
+                        List<ChampionDto> championDtoList = new ArrayList<ChampionDto>();
+                        championDtoList.addAll(response.body().data.values());
+                        manager.setChampionList(championDtoList);
+                        setChampionsImg(maxChampions, championDtoList);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ChampionListDto> call, Throwable t) {
+
+                }
+            });
+        }
+    }
+
+    private void setChampionsImg(List<Long> listIds, List<ChampionDto> listChampions) {
+        List<String> championNames = new ArrayList<>();
+        for (long id : listIds) {
+            for (ChampionDto champion : listChampions) {
+                if (id == champion.id) {
+                    Log.d("CHAMPION", champion.name);
+                    championNames.add(champion.name);
+                }
             }
         }
-        
+        Picasso.with(this).load(CHAMPION_ICON_URL.replace("@@@", "" + championNames.get(0))).into(champion1);
+        Picasso.with(this).load(CHAMPION_ICON_URL.replace("@@@", "" + championNames.get(1))).into(champion2);
+        Picasso.with(this).load(CHAMPION_ICON_URL.replace("@@@", "" + championNames.get(2))).into(champion3);
+
     }
 
     private void initUI() {
