@@ -1,6 +1,7 @@
 package com.fxzhang.duo.service;
 
 import com.fxzhang.duo.service.response.LeagueDto;
+import com.fxzhang.duo.service.response.MatchList;
 import com.fxzhang.duo.service.response.Summoner;
 import com.fxzhang.duo.service.response.SummonerStatsSummary;
 
@@ -24,4 +25,7 @@ public interface RiotGamesService {
 
     @GET("/api/lol/{region}/v2.5/league/by-summoner/{summonerIds}/entry")
     Call<Map<String, List<LeagueDto>>> getSummonerRankedStatsById(@Path("region") String region, @Path("summonerIds") long summonerId);
+
+    @GET("/api/lol/{region}/v2.2/matchlist/by-summoner/{summonerId}")
+    Call<MatchList> getMatchList(@Path("region") String region, @Path("summonerId") long summonderId);
 }

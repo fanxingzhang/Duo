@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     protected static final String PROFILE_ICON_URL = "http://ddragon.leagueoflegends.com/cdn/6.24.1/img/profileicon/@@@.png";
 
     protected RiotGamesService riotGamesService;
+    protected RiotGamesService riotGamesServiceForMatches;
     private ViewGroup mMainView;
     private Toolbar mToolbar;
 
@@ -34,6 +35,9 @@ public class MainActivity extends AppCompatActivity {
 
         Retrofit retrofit = MyRetrofitBuilder.getRetrofit();
         riotGamesService = retrofit.create(RiotGamesService.class);
+
+        Retrofit retrofitForMatches = MyRetrofitBuilder.getRetrofitForMatches();
+        riotGamesServiceForMatches = retrofitForMatches.create(RiotGamesService.class);
     }
 
     protected void setContentMainView(int id) {

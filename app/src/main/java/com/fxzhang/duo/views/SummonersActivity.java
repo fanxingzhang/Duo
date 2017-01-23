@@ -13,6 +13,8 @@ import android.widget.TextView;
 import com.fxzhang.duo.R;
 import com.fxzhang.duo.SubActivity;
 import com.fxzhang.duo.service.response.LeagueDto;
+import com.fxzhang.duo.service.response.MatchList;
+import com.fxzhang.duo.service.response.MatchReference;
 import com.fxzhang.duo.service.response.Summoner;
 import com.fxzhang.duo.utils.SharedPref;
 import com.fxzhang.duo.utils.Tags;
@@ -22,6 +24,7 @@ import com.fxzhang.duo.views.fragments.SummonerSelectFragment;
 import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -175,7 +178,7 @@ public class SummonersActivity extends SubActivity {
                     }
                 }
                 if (mRankedDetails != null) {
-                    initUI();
+                    getMatchList();
                 }
             }
 
@@ -184,6 +187,45 @@ public class SummonersActivity extends SubActivity {
 
             }
         });
+    }
+
+    private void getMatchList() {
+        Call<MatchList> call = riotGamesServiceForMatches.getMatchList("na", mSummonerId);
+        call.enqueue(new Callback<MatchList>() {
+            @Override
+            public void onResponse(Call<MatchList> call, Response<MatchList> response) {
+                initUI();
+                if (response.body() != null) {
+                    setChampions(response.body().matches);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MatchList> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void setChampions(List<MatchReference> matches) {
+        Map<Long, Integer> championsCount = new HashMap<>();
+        for (MatchReference match : matches) {
+            if (championsCount.containsKey(match.champion)) {
+                championsCount.put(match.champion, championsCount.get(match.champion) + 1);
+            }
+            else {
+                championsCount.put(match.champion, 1);
+            }
+        }
+        int max = 0;
+        long maxChampion;
+        for (Map.Entry<Long, Integer> entry : championsCount.entrySet()) {
+            if (entry.getValue() > max) {
+                maxChampion = entry.getKey();
+                max = entry.getValue();
+            }
+        }
+        
     }
 
     private void initUI() {

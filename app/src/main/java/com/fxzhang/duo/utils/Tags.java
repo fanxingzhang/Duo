@@ -15,6 +15,7 @@ public class Tags {
     public static final String SUMMONER_LEVEL2 = "summoner_level2";
     public static final String RANKED_SOLO = "RankedSolo5x5";
     public static final String RANKED_SOLO_2 = "RANKED_SOLO_5x5";
+    public static final String RANKED_SOLO_3 = "TEAM_BUILDER_RANKED_SOLO";
     public static final String PLAYER_STATS_SUMMARY = "player_stats_summary";
     public static final String RANKED_DETAILS = "ranked_details";
 }

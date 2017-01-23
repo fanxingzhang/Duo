@@ -35,10 +35,18 @@ public class SummonerCompareActivity extends SubActivity {
     private TextView killText;
     private TextView assistText;
     private TextView turretsText;
+    private TextView winText;
+    private TextView lossText;
     private View winRateBar;
     private View killBar;
     private View assistBar;
     private View turretsBar;
+    private View winBar;
+    private View lossBar;
+    private TextView mRankText;
+    private TextView mLPText;
+    private ImageView mLeagueImage;
+
     private ImageView iconView2;
     private TextView nameText2;
     private TextView levelText2;
@@ -46,10 +54,17 @@ public class SummonerCompareActivity extends SubActivity {
     private TextView killText2;
     private TextView assistText2;
     private TextView turretsText2;
+    private TextView winText2;
+    private TextView lossText2;
     private View winRateBar2;
     private View killBar2;
     private View assistBar2;
     private View turretsBar2;
+    private View winBar2;
+    private View lossBar2;
+    private TextView mRankText2;
+    private TextView mLPText2;
+    private ImageView mLeagueImage2;
 
     private long mSummonerId;
     private String mSummonerName;
@@ -97,6 +112,13 @@ public class SummonerCompareActivity extends SubActivity {
         killBar = findViewById(R.id.summoner_champion_kills_bar);
         assistBar = findViewById(R.id.summoner_assists_bar);
         turretsBar = findViewById(R.id.summoner_turrets_bar);
+        mRankText = (TextView) findViewById(R.id.summoner_rank);
+        mLPText = (TextView) findViewById(R.id.summoner_lp);
+        mLeagueImage = (ImageView) findViewById(R.id.summoner_league_image);
+        winText = (TextView) findViewById(R.id.summoner_wins);
+        lossText = (TextView) findViewById(R.id.summoner_losses);
+        winBar = findViewById(R.id.summoner_wins_bar);
+        lossBar = findViewById(R.id.summoner_losses_bar);
 
         iconView2 = (ImageView) findViewById(R.id.summoner_icon2);
         nameText2 = (TextView) findViewById(R.id.summoner_name2);
@@ -109,6 +131,13 @@ public class SummonerCompareActivity extends SubActivity {
         killBar2 = findViewById(R.id.summoner_champion_kills_bar2);
         assistBar2 = findViewById(R.id.summoner_assists_bar2);
         turretsBar2 = findViewById(R.id.summoner_turrets_bar2);
+        mRankText2 = (TextView) findViewById(R.id.summoner_rank2);
+        mLPText2 = (TextView) findViewById(R.id.summoner_lp2);
+        mLeagueImage2 = (ImageView) findViewById(R.id.summoner_league_image2);
+        winText2 = (TextView) findViewById(R.id.summoner_wins2);
+        lossText2 = (TextView) findViewById(R.id.summoner_losses2);
+        winBar2 = findViewById(R.id.summoner_wins_bar2);
+        lossBar2 = findViewById(R.id.summoner_losses_bar2);
 
         DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
         screenHeight = displayMetrics.heightPixels / displayMetrics.density;
@@ -182,6 +211,15 @@ public class SummonerCompareActivity extends SubActivity {
         int total = wins + losses;
         int total2 = wins2 + losses2;
 
+        winBar.getLayoutParams().width = (int) (wins * screenWidth / 2) / (wins + wins2);
+        winBar2.getLayoutParams().width = (int) (wins2 * screenWidth / 2) / (wins + wins2);
+        lossBar.getLayoutParams().width = (int) (losses * screenWidth / 2) / (losses + losses2);
+        lossBar2.getLayoutParams().width = (int) (losses2 * screenWidth / 2) / (losses + losses2);
+        winText.setText("" + wins + " " + getString(R.string.wins));
+        lossText.setText("" + losses + " " + getString(R.string.losses));
+        winText2.setText("" + wins2 + " " + getString(R.string.wins));
+        lossText2.setText("" + losses2 + " " + getString(R.string.losses));
+
         winRateBar.getLayoutParams().width = (int) (winRate * screenWidth / 2) / (winRate + winRate2);
         winRateBar2.getLayoutParams().width = (int) (winRate2 * screenWidth / 2) / (winRate + winRate2);
         winRateText.setText("" + winRate + "% " + getString(R.string.win_rate));
@@ -208,5 +246,36 @@ public class SummonerCompareActivity extends SubActivity {
         turretsBar.getLayoutParams().width = (int) (turrets * screenWidth / 2) / (turrets + turrets2);
         turretsBar2.getLayoutParams().width = (int) (turrets2 * screenWidth / 2) / (turrets + turrets2);
 
+        String mRank = mRankedDetails.tier;
+        String mDivision = mRankedDetails.entries.get(0).division;
+        String mSummonerRankString = mRank + " " + mDivision;
+        mRankText.setText(mSummonerRankString);
+        mLPText.setText("" + mRankedDetails.entries.get(0).leaguePoints + " LP");
+
+        String divisionId;
+        if (mRank.equals("CHALLENGER") || mRank.equals("MASTER")) {
+            divisionId = mRank.toLowerCase();
+        }
+        else {
+            divisionId = mRank.toLowerCase() + "_" + mDivision.toLowerCase();
+        }
+        int imageId = getResources().getIdentifier(divisionId, "drawable", getPackageName());
+        mLeagueImage.setImageResource(imageId);
+
+        String mRank2 = mRankedDetails2.tier;
+        String mDivision2 = mRankedDetails2.entries.get(0).division;
+        String mSummonerRankString2 = mRank2 + " " + mDivision2;
+        mRankText2.setText(mSummonerRankString2);
+        mLPText2.setText("" + mRankedDetails2.entries.get(0).leaguePoints + " LP");
+
+        String divisionId2;
+        if (mRank2.equals("CHALLENGER") || mRank2.equals("MASTER")) {
+            divisionId2 = mRank.toLowerCase();
+        }
+        else {
+            divisionId2 = mRank2.toLowerCase() + "_" + mDivision2.toLowerCase();
+        }
+        int imageId2 = getResources().getIdentifier(divisionId2, "drawable", getPackageName());
+        mLeagueImage2.setImageResource(imageId2);
     }
 }
